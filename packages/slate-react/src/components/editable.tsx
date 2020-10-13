@@ -199,10 +199,21 @@ export const Editable = (props: EditableProps) => {
         )
       }
       const leafEl = newDomRange.startContainer.parentElement!
-      scrollIntoView(leafEl, {
-        scrollMode: 'if-needed',
-        boundary: el,
-      })
+      let block: "end" | "start" | "center" | "nearest" | undefined = undefined;
+
+      if (newDomRange.endContainer.nodeValue && newDomRange.startOffset === newDomRange.endContainer.nodeValue.length) {
+        block = 'end';
+      } else if (newDomRange.startOffset <= 1) {
+        block = 'start';
+      }
+
+      if (block) {
+        scrollIntoView(leafEl, {
+          scrollMode: 'if-needed',
+          boundary: el.parentElement || el,
+          block,
+        })
+      }
     } else {
       domSelection.removeAllRanges()
     }
